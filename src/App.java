@@ -1,7 +1,16 @@
+import model.Line;
+import rasterize.LineRasterizer;
+import rasterize.LineRasterizerGraphics;
+import rasterize.LineRasterizerTrivial;
 import rasterize.RasterBufferedImage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import model.Point;
+
 
 /**
  * @author PGRF FIM UHK
@@ -12,7 +21,7 @@ public class App {
 
 	private JPanel panel;
 	private RasterBufferedImage raster;
-	private int x,y;
+	private LineRasterizer lineRasterizer;
 
 	public App(int width, int height) {
 		JFrame frame = new JFrame();
@@ -24,6 +33,8 @@ public class App {
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		raster = new RasterBufferedImage(width, height);
+//		lineRasterizer = new LineRasterizerGraphics(raster);
+		lineRasterizer = new LineRasterizerTrivial(raster);
 
 		panel = new JPanel() {
 			private static final long serialVersionUID = 1L;
@@ -39,12 +50,29 @@ public class App {
 		frame.add(panel, BorderLayout.CENTER);
 		frame.pack();
 		frame.setVisible(true);
+
+		panel.requestFocus();
+		panel.requestFocusInWindow();
+		panel.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				super.mouseDragged(e);
+
+				raster.clear();
+
+				Point p1 = new Point(width / 2, height / 2);
+				Point p2 = new Point(e.getX(), e.getY());
+				Line line  = new Line(p1, p2, 0xffff00);
+				lineRasterizer.rasterize(line);
+
+				panel.repaint();
+			}
+		});
 	}
 
 	public void clear(int color) {
 		raster.setClearColor(color);
 		raster.clear();
-		
 	}
 
 	public void present(Graphics graphics) {
@@ -53,7 +81,7 @@ public class App {
 
 	public void start() {
 		clear(0xaaaaaa);
-		// TODO: init draw
+
 		panel.repaint();
 	}
 
