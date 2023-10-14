@@ -1,3 +1,3 @@
-# PGRF1.2023.c02
+# PGRF1.2023.c04
 
-Projekt pro cvičení ST 11:35 - 13:10.
+Projekt 1 - Jan Svoboda - úterý 13:15 - 14:50

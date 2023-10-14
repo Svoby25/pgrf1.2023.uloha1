@@ -4,27 +4,37 @@ import model.Line;
 import model.Point;
 import model.Polygon;
 
+/**
+ * Tato třída slouží k rasterizaci polygonů
+ */
 public class PolygonRasterizer {
-    private LineRasterizer lineRasterizer;
+    private LineRasterizer rasterizer;
 
-    public PolygonRasterizer(LineRasterizer lineRasterizer) {
-        this.lineRasterizer = lineRasterizer;
+    public PolygonRasterizer(LineRasterizer rasterizer) {
+        this.rasterizer = rasterizer;
     }
 
     public void rasterize(Polygon polygon) {
-        if (polygon.getSize() < 3)
-            return;
+        for (int i = 0; i < polygon.size(); i++) {
+            int index1 = i;
+            int index2 = index1 + 1;
 
-        for (int i = 0; i < polygon.getSize(); i++) {
-            int indexA = i;
-            int indexB = i + 1;
-            if(indexB == polygon.getSize())
-                indexB = 0;
+            Point point1 = polygon.getPoint(index1);
+            if (index2 == polygon.size()) {
+                index2 = 0;
+            }
 
-            Point pointA = polygon.getPoint(indexA);
-            Point pointB = polygon.getPoint(indexB);
+            Point point2 = polygon.getPoint(index2);
 
-            lineRasterizer.rasterize(new Line(pointA, pointB, 0xffff00));
+            this.rasterizer.rasterize(new Line(point1, point2, 0xffff00));
+            if (polygon.size() == 2) {
+                break;
+            }
         }
+
+    }
+
+    public void setRasterizer(LineRasterizer rasterizer) {
+        this.rasterizer = rasterizer;
     }
 }
